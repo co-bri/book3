@@ -46,23 +46,38 @@
     <script>
 
 function solution1(data){
-    return data.length
+    // How many pokemon 
+	return data.length
 }
 
 function solution2(data){
+    // What is the average attack points
     return _.sum(_.pluck(data, 'Attack')) / data.length
 }
 
 function solution3(data){
+	// What are all the names
     return _.pluck(data, 'Name').join(', ')
 }
 
 function solution4(data){
-    return 'TODO'
+	// What is the pokemon with the highest attack points
+	var x = _.pluck(data, 'Attack')
+	var max = _.max(x)
+	var name = _.find(data, function(d){
+		return d['Attack'] == max
+	})	
+    return name['Name'] 
 }
 
 function solution5(data){
-    return 'TODO'
+	// Which Pokemon are of grass type
+	console.log(data)
+	var x = _.filter(data, function(d){
+		return d['Type'] == 'GRASS'
+	})
+	var y = _.pluck(x, 'Name')	
+    return y
 }
 
 function run(id, solutionFunc, data){
