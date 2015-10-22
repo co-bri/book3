@@ -185,7 +185,7 @@ function solution5(){
 	histNums = _.sortBy(histNums, function(d){
 		return d[0]
 	})
-	csNums = _.sortBy(csNums, function(d) {
+	csNums = _.sortBy(csNums, function(d) 
 		return d[0]
 	})
 	x =  _.map(histNums,function(d){
@@ -203,9 +203,6 @@ function solution5(){
 	console.log(x)
 	console.log(y)
 	console.log(z)
-	x = _.take(x,4)
-	y = _.take(y,4)
-	z = _.take(z,4)
 	var data = {
           labels: x
 			,

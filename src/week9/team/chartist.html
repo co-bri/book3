@@ -167,15 +167,50 @@ function solution5(){
             [30,30,30,30]   // HIST
           ]
     }
-	
-
-		
-
-
-
-
-
-
+    var groups = _.groupBy(items, 'CrsPBADept')
+	console.log(groups)
+	hist = groups['HIST']
+	cs = groups['CSCI']
+	console.log(hist)
+	histLevel = _.groupBy(hist,'CrsLvlNum')
+	csLevel = _.groupBy(cs,'CrsLvlNum')
+	histNums = _.pairs(_.mapValues(histLevel,function(d){
+		return d.length
+	}))
+	csNums = _.pairs(_.mapValues(csLevel,function(d){
+		return d.length
+	}))	
+	console.log(histNums)
+	console.log(csNums)
+	histNums = _.sortBy(histNums, function(d){
+		return d[0]
+	})
+	csNums = _.sortBy(csNums, function(d) {
+		return d[0]
+	})
+	x =  _.map(histNums,function(d){
+				console.log(d)
+				return d[0]
+	})
+	y =  _.map(histNums,function(d){
+				console.log(d)
+				return d[1]
+	})
+	z =  _.map(csNums,function(d){
+				console.log(d)
+				return d[1]
+	})
+	console.log(x)
+	console.log(y)
+	console.log(z)
+	x = _.take(x,4)
+	y = _.take(y,4)
+	z = _.take(z,4)
+	var data = {
+          labels: x
+			,
+          series: [ y, z ]
+    }
 
     new Chartist.Bar('#q5 .answer', data);
 }
