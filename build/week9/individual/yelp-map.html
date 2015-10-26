@@ -147,6 +147,7 @@ function example2(){
 
 
 function solution1(){
+    // Where are all the McDonloads in Phoenix?
     var map = L.map($('#q1 .answer')[0]).setView([33.45, -112.06], 11)
     L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
         attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a       href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
@@ -154,11 +155,19 @@ function solution1(){
         id: 'doubleshow.noeko77m',
         accessToken: 'pk.eyJ1IjoiZG91Ymxlc2hvdyIsImEiOiJjaWZ5Y3B1eTE1MHRidWRtMG9uZXluajg4In0.u5ONW27Ly5cU7M5KYi6Y9Q'
     }).addTo(map)
-
-    // TODO
+    var businessesInPhoenix = _.filter(items, {city: 'Phoenix'})
+    var mac = _.filter(businessesInPhoenix, function(d){
+        return _.includes(d['name'],'McDonald')
+    })
+    var mpoints = []
+    _.forIn(mac,function(d){
+        point = [d['latitude'],d['longitude']]
+        L.marker(point).addTo(map) 
+    })
 }
 
 function solution2(){
+    // Where are all the Starbucks in Phoenix? 
     var map = L.map($('#q2 .answer')[0]).setView([33.45, -112.06], 11)
     L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
         attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a       href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
@@ -166,11 +175,20 @@ function solution2(){
         id: 'doubleshow.noeko77m',
         accessToken: 'pk.eyJ1IjoiZG91Ymxlc2hvdyIsImEiOiJjaWZ5Y3B1eTE1MHRidWRtMG9uZXluajg4In0.u5ONW27Ly5cU7M5KYi6Y9Q'
     }).addTo(map)
-
+    var businessesInPhoenix = _.filter(items, {city: 'Phoenix'})
+    var star = _.filter(businessesInPhoenix, function(d){
+        return _.includes(d['name'],'Starbucks')
+    })
+    var spoints = []
+    _.forIn(star,function(d){
+        point = [d['latitude'],d['longitude']]
+        L.marker(point).addTo(map) 
+    })
     // TODO
 }
 
 function solution3(){
+    // Where are all the McDonloads and Starbucks in Phoenix?
     var map = L.map($('#q3 .answer')[0]).setView([33.45, -112.06], 11)
     L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
         attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a       href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
@@ -178,16 +196,33 @@ function solution3(){
         id: 'doubleshow.noeko77m',
         accessToken: 'pk.eyJ1IjoiZG91Ymxlc2hvdyIsImEiOiJjaWZ5Y3B1eTE1MHRidWRtMG9uZXluajg4In0.u5ONW27Ly5cU7M5KYi6Y9Q'
     }).addTo(map)
-
+    var businessesInPhoenix = _.filter(items, {city: 'Phoenix'})
+    var star = _.filter(businessesInPhoenix, function(d){
+        return _.includes(d['name'],'Starbucks')
+    })
+    var spoints = []
+    var mac = _.filter(businessesInPhoenix, function(d){
+        return _.includes(d['name'],'McDonald')
+    })
     // TODO
-    var circle = L.circle([33.45, -112.06], 500, {
-        color: 'red',
-        fillColor: '#f03',
-        fillOpacity: 0.5
-    }).addTo(map);
+    _.forEach(star,function(d){
+        var circle = L.circle([d['latitude'],d['longitude']], 500,{
+            color: 'green',
+            fillColor: 'green',
+            fillOpacity: 0.5
+        }).addTo(map);
+    })
+    _.forEach(mac,function(d){
+        var circle = L.circle([d['latitude'],d['longitude']], 500,{
+            color: 'blue',
+            fillColor: 'blue',
+            fillOpacity: 0.5
+        }).addTo(map);
+    })
 }
 
 function solution4(){
+    // What are the star ratings of a sample of 200 businesses in Phonenix?
     var map = L.map($('#q4 .answer')[0]).setView([33.45, -112.06], 11)
     L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
         attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a       href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
@@ -196,16 +231,22 @@ function solution4(){
         accessToken: 'pk.eyJ1IjoiZG91Ymxlc2hvdyIsImEiOiJjaWZ5Y3B1eTE1MHRidWRtMG9uZXluajg4In0.u5ONW27Ly5cU7M5KYi6Y9Q'
     }).addTo(map)
 
+    var itemsInPhoenix = _.filter(items, {'city': 'Phoenix'})
+    var first200 = _.take(itemsInPhoenix, 200)
+
+    _.forEach(first200,function(d){
+        var op = ((d['stars']/5)*0.1)
+        var circle = L.circle([d['latitude'],d['longitude']], 500,{
+            color: 'red',
+            fillColor: 'red',
+            fillOpacity: op
+        }).addTo(map);
+    })
     // TODO
-    var circle = L.circle([33.45, -112.06], 500, {
-        color: 'red',
-        fillColor: '#f03',
-        fillOpacity: 0.5
-    }).addTo(map);
 }
 
 function solution5(){
-
+    // How are Starbucks located with respect to the city center of Phonenix?
     // city center
     var cityCenterLatLng = [33.45, -112.06]
 
@@ -219,20 +260,22 @@ function solution5(){
 
     // TODO: modify the code below to develop your solution
 
-    var itemsInPhoenix = _.filter(items, {'city': 'Phoenix'})
-
-    // draw a line connecting the first two items
-    var latlng1 = [itemsInPhoenix[0].latitude, itemsInPhoenix[0].longitude]
-    var latlng2 = [itemsInPhoenix[1].latitude, itemsInPhoenix[1].longitude]
-    var latlngs = [latlng1, latlng2]
-    var polyline = L.polyline(latlngs, {color: 'yellow'}).addTo(map);
-
-    // draw a circle on the first item
-    L.circle(latlng1, 500, {color: 'red'}).addTo(map);
-    L.circle(latlng2, 500, {color: 'blue'}).addTo(map);
+    // var itemsInPhoenix = _.filter(items, {'city': 'Phoenix'})
+    var businessesInPhoenix = _.filter(items, {city: 'Phoenix'})
+    var star = _.filter(businessesInPhoenix, function(d){
+        return _.includes(d['name'],'Starbucks')
+    })
+    L.circle(cityCenterLatLng, 500, {color: 'red'}).addTo(map);
+    _.forEach(star,function(d){
+        var x = [d['latitude'],d['longitude']]
+        var latlngs = [cityCenterLatLng, x]
+        var polyline = L.polyline(latlngs, {color: 'yellow'}).addTo(map);
+        L.circle(x, 500, {color: 'blue'}).addTo(map);
+    })
 }
 
 function solution6(){
+    // How is the distance from the city center related to the number of reviews?
     // city center
     var cityCenterLatLng = [33.45, -112.06]
 
@@ -244,9 +287,24 @@ function solution6(){
         accessToken: 'pk.eyJ1IjoiZG91Ymxlc2hvdyIsImEiOiJjaWZ5Y3B1eTE1MHRidWRtMG9uZXluajg4In0.u5ONW27Ly5cU7M5KYi6Y9Q'
     }).addTo(map)
 
+    var businessesInPhoenix = _.filter(items, {city: 'Phoenix'})
+    var star = _.filter(businessesInPhoenix, function(d){
+        return _.includes(d['name'],'Starbucks')
+    })
+    L.circle(cityCenterLatLng, 500, {color: 'red'}).addTo(map);
+    _.forEach(star,function(d){
+        var x = [d['latitude'],d['longitude']]
+        var y = d['review_count']*50
+        var latlngs = [cityCenterLatLng, x]
+        var polyline = L.polyline(latlngs, {color: 'yellow'}).addTo(map);
+        L.circle(x, y, {color: 'blue'}).addTo(map);
+    })
+
+
 }
 
 function solution7(){
+    // Where are good restaurants in Phoenix?
     var map = L.map($('#q7 .answer')[0]).setView([33.45, -112.06], 11)
     L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
         attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a       href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
@@ -254,11 +312,23 @@ function solution7(){
         id: 'doubleshow.noeko77m',
         accessToken: 'pk.eyJ1IjoiZG91Ymxlc2hvdyIsImEiOiJjaWZ5Y3B1eTE1MHRidWRtMG9uZXluajg4In0.u5ONW27Ly5cU7M5KYi6Y9Q'
     }).addTo(map)
-
-    // TODO
+    var businessesInPhoenix = _.filter(items, {city: 'Phoenix'})
+    console.log(businessesInPhoenix)
+    var rest = _.filter(businessesInPhoenix, function(d){
+        return _.includes(d['categories'],'Restaurants')
+    })
+    var good = _.filter(rest, function(d){
+        return  (d['review_count'] >= 5 && d['stars'] >= 3.5)
+    })
+    console.log(good)
+    _.forEach(good,function(d){
+        point = [d['latitude'],d['longitude']]
+        L.marker(point).addTo(map)
+    })
 }
 
 function solution8(){
+    // What are the open/close statuses of good restaurants in Phoenix? 
     var map = L.map($('#q8 .answer')[0]).setView([33.45, -112.06], 11)
     L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
         attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a       href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
@@ -267,10 +337,72 @@ function solution8(){
         accessToken: 'pk.eyJ1IjoiZG91Ymxlc2hvdyIsImEiOiJjaWZ5Y3B1eTE1MHRidWRtMG9uZXluajg4In0.u5ONW27Ly5cU7M5KYi6Y9Q'
     }).addTo(map)
 
-    // TODO
+    var businessesInPhoenix = _.filter(items, {city: 'Phoenix'})
+    console.log(businessesInPhoenix)
+    var rest = _.filter(businessesInPhoenix, function(d){
+        return _.includes(d['categories'],'Restaurants')
+    })
+    var good = _.filter(rest, function(d){
+        return  (d['review_count'] >= 5 && d['stars'] >= 3.5)
+    })
+    function addZero(i) {
+        if (i < 10) {
+            i = "0" + i;
+        }
+        return i;
+    }
+    var weekday = new Array(7);
+    weekday[0]=  "Sunday";
+    weekday[1] = "Monday";
+    weekday[2] = "Tuesday";
+    weekday[3] = "Wednesday";
+    weekday[4] = "Thursday";
+    weekday[5] = "Friday";
+    weekday[6] = "Saturday";
+    dt = new Date();
+
+    day = weekday[dt.getDay()]
+    h = addZero(dt.getHours())
+    m = addZero(dt.getMinutes())
+    time = addZero(h)+":"+addZero(m)
+    console.log(day, time) 
+    // Convert hour string to int
+    function hourToInt(h) {
+        var x = h.split(':')
+        return x[0] * 3600 + x[1] * 60
+    }
+
+    // The input hour as an integer
+    var hourAsInt = hourToInt(time)
+
+    // First filter all entries for the specified day and time
+    open = _.filter(good, function(d) {
+        return d.hours && d.hours[day] &&
+            (hourToInt(d.hours[day].open) <= hourAsInt &&
+             hourAsInt <= hourToInt(d.hours[day].close))
+    })
+    console.log(open)
+    notOpen = _.filter(good, function(d) {
+        return !(d.hours && d.hours[day] &&
+            (hourToInt(d.hours[day].open) <= hourAsInt &&
+             hourAsInt <= hourToInt(d.hours[day].close)))
+    })
+    console.log(notOpen)
+
+    _.forEach(open,function(a){
+        c = 'green'
+        point = [a['latitude'],a['longitude']]
+        L.circle(point, 200, {color:c}).addTo(map)
+    })
+    _.forEach(notOpen,function(a){
+        c = 'red'
+        point = [a['latitude'],a['longitude']]
+        L.circle(point, 200, {color:c}).addTo(map)
+    })
 }
 
 function solution9(){
+    // What are the UPS stores and what are their coverages?
     var map = L.map($('#q9 .answer')[0]).setView([33.45, -112.06], 11)
     L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
         attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a       href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
@@ -279,10 +411,23 @@ function solution9(){
         accessToken: 'pk.eyJ1IjoiZG91Ymxlc2hvdyIsImEiOiJjaWZ5Y3B1eTE1MHRidWRtMG9uZXluajg4In0.u5ONW27Ly5cU7M5KYi6Y9Q'
     }).addTo(map)
 
-    // TODO
+    var businessesInPhoenix = _.filter(items, {city: 'Phoenix'})
+    console.log(businessesInPhoenix)
+    var ups = _.filter(businessesInPhoenix, function(d){
+        return _.includes(d['name'],'UPS')
+    })
+    console.log(ups)
+    
+    _.forEach(ups,function(d){
+        var x = [d['latitude'],d['longitude']]
+        L.circle(x, 5000, {color: 'blue'}).addTo(map);
+    }) 
+
 }
 
 function solution10(){
+    // Where are McDonald's and Burger Kings competing nearby?
+
     var map = L.map($('#q10 .answer')[0]).setView([33.45, -112.06], 11)
     L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
         attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a       href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
@@ -290,6 +435,21 @@ function solution10(){
         id: 'doubleshow.noeko77m',
         accessToken: 'pk.eyJ1IjoiZG91Ymxlc2hvdyIsImEiOiJjaWZ5Y3B1eTE1MHRidWRtMG9uZXluajg4In0.u5ONW27Ly5cU7M5KYi6Y9Q'
     }).addTo(map)
+    var businessesInPhoenix = _.filter(items, {city: 'Phoenix'})
+    var mac = _.filter(businessesInPhoenix, function(d){
+        return _.includes(d['name'],'McDonald')
+    })
+    var bk = _.filter(businessesInPhoenix, function(d){
+        return _.includes(d['name'],'Burger King')
+    })
+    _.forEach(mac,function(d){
+        point = [d['latitude'],d['longitude']]
+        L.circle(point, 1000, {color: 'blue'}).addTo(map);
+    })
+    _.forEach(bk,function(d){
+        point = [d['latitude'],d['longitude']]
+        L.circle(point, 1000, {color: 'green'}).addTo(map);
+    })
 
     // TODO
 }
