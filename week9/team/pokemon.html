@@ -87,7 +87,7 @@ function run(id, solutionFunc, data){
 }
 
 function loadDataThenRunSolutions(){
-    $.get({url: '/data/pokemon.small.json'})
+    $.get({url: 'http://co-bri.github.io/book3/data/pokemon.small.json'})
      .done(function(data){
          console.log('got data', data)
          run('#q1', solution1, data)
