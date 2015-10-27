@@ -82,22 +82,28 @@ function has_at_least_ten_businesses_with_100_or_more_reviews_within_one_mile(lo
 
   return frequentlyReviewedBusinsses.length > 10
 }
-
-function has_elementary_school(loc){
- var S = _.filter(items, function(x){
-   return _.includes(x['categories'], 'Elementary Schools')
- })
- var latlng = [S[0]['latitude'],S[0]['longitude']]
- return geolib.isPointInCircle({latitude: loc['latitude'],longitude: loc['longitude']},latlng,5000)
-} 
-
-
-function has_a_coffee_shop_within_1_mile(loc){
-  // Is there a coffee shop wthin 1 KM
+function has_elementary_school_within_1_mile(loc){
   var nearbyBusinesses = _.filter(items, function(item){
     var loc2  = _.pick(item, ['latitude', 'longitude'])
     var d = geolib.getDistance(loc, loc2)
     return geolib.convertUnit('mi', d) < 1
+  })
+
+  var elem = _.filter(nearbyBusinesses, function (d){
+    return _.includes(d['categories'],'Elementary Schools')
+  })
+
+  return elem.length > 0
+}
+
+
+
+function has_a_coffee_shop_within_a_quarter_mile(loc){
+  // Is there a coffee shop wthin 1 KM
+  var nearbyBusinesses = _.filter(items, function(item){
+    var loc2  = _.pick(item, ['latitude', 'longitude'])
+    var d = geolib.getDistance(loc, loc2)
+    return geolib.convertUnit('mi', d) < .25
   })
 
   var coffeeShops = _.filter(nearbyBusinesses, function (d){
@@ -115,15 +121,14 @@ function has_no_dive_bars_within_one_mile(loc){
    return geolib.convertUnit('mi', d) < 1
  })
 
- var no_dive_bars = _.filter(nearbyBusinesses, function (business) {
-   return !_.includes(business.categories, 'Dive Bars')
+ var dive_bars = _.filter(nearbyBusinesses, function (business) {
+   return _.includes(business.categories, 'Dive Bars')
  })
 
- return no_dive_bars
+ return dive_bars == 0
 }
 
 function has_a_gas_station_within_1_mile(loc){
-  // Is there a coffee shop wthin 1 mile 
   var nearbyBusinesses = _.filter(items, function(item){
     var loc2  = _.pick(item, ['latitude', 'longitude'])
     var d = geolib.getDistance(loc, loc2)
@@ -170,11 +175,11 @@ function has_no_adult_entertainment_within_one_mile(loc){
    return geolib.convertUnit('mi', d) < 1
  })
 
- var no_adult_entertainment = _.filter(nearbyBusinesses, function (business) {
-   return !_.includes(business.categories, 'Adult Entertainment')
+ var adult_entertainment = _.filter(nearbyBusinesses, function (business) {
+   return _.includes(business.categories, 'Adult Entertainment')
  })
 
- return no_adult_entertainment
+ return adult_entertainment == 0
 }
 
 // 8. Are there Fast Food Restaurants within one mile?
@@ -194,18 +199,17 @@ function has_no_fast_food_within_one_mile(loc){
 }
 // # Has urgent care pediatrician with 4 or more stars rating
 function has_urgent_care_pediatricians_with_gt_4stars_rating(loc){
- var S = _.filter(items, function(x){
+  var nearbyBusinesses = _.filter(items, function(item){
+    var loc2  = _.pick(item, ['latitude', 'longitude'])
+    var d = geolib.getDistance(loc, loc2)
+    return geolib.convertUnit('mi', d) < 3
+  })
+ var S = _.filter(nearbyBusinesses, function(x){
    return _.contains(x['categories'], 'Pediatricians') && _.contains(x['categories'],'Urgent Care') && x['stars'] >= 4
  })
- console.log(S)
- var bool = false
- _.forEach(S,function(x){
-   var latlng = [S[0]['latitude'],S[0]['longitude']]
-   bool = geolib.isPointInCircle({latitude: loc['latitude'],longitude: loc['longitude']},latlng,15000)
-   if(bool == true){return true}
- })
- if(bool == false){return false}
+  return S.length > 0
 }
+ 
 
 function has_at_least_one_hipster_wine_bar_within_5_miles(loc){
     // get businesses within 1 mile radius
@@ -227,21 +231,19 @@ function has_at_least_one_hipster_wine_bar_within_5_miles(loc){
     }) 
     return hipsterWineBars.length > 0  
 }
-//#6 has no childcare within 15km radius
-function has_no_childcare_within15km(loc){
- var S = _.filter(items, function(x){
+//#6 has no childcare within 1km radius
+function has_no_childcare_within_2_mile(loc){
+  var nearbyBusinesses = _.filter(items, function(item){
+    var loc2  = _.pick(item, ['latitude', 'longitude'])
+    var d = geolib.getDistance(loc, loc2)
+    return geolib.convertUnit('mi', d) < 2
+  })
+ var S = _.filter(nearbyBusinesses, function(x){
    return _.contains(x['categories'], 'Child Care & Day Care')
  })
-
- var bool = false
- _.forEach(S,function(x){
-   var latlng = [S[0]['latitude'],S[0]['longitude']]
-
-   bool = !geolib.isPointInCircle({latitude: loc['latitude'],longitude: loc['longitude']},latlng,15000)
-   if(bool == false){return false}
- })
- return bool
+  return S.length > 0
 }
+ 
 // 11. Are there any late night businesses?
 //     Businesses have late night hours, if they are open all night, in which case, no hours will be listed.
 //     Or, the closing hour is less than the opening hour (e.g., closing hour is 1:00 and opening hour is 8:00)
@@ -260,6 +262,7 @@ function has_no_late_night_businesses_within_one_fourth_mile(loc){
            return hours[0] <= hours[1]
        })
    })
+   return late_nighters == 0
 }
 
 //
@@ -362,17 +365,17 @@ function loadDataThenRunSolutions(){
 
       scoreAndVisualize(locs, has_at_least_one_mcdonald_within_one_mile, visualize_true_or_false)
       scoreAndVisualize(locs, has_at_least_ten_businesses_with_100_or_more_reviews_within_one_mile, visualize_true_or_false)
-      scoreAndVisualize(locs, has_elementary_school, visualize_true_or_false)
-      scoreAndVisualize(locs, has_a_coffee_shop_within_1_mile, visualize_true_or_false)
+      scoreAndVisualize(locs, has_elementary_school_within_1_mile, visualize_true_or_false)
+      scoreAndVisualize(locs, has_a_coffee_shop_within_a_quarter_mile, visualize_true_or_false)
       scoreAndVisualize(locs, has_no_dive_bars_within_one_mile, visualize_true_or_false)
       scoreAndVisualize(locs, has_a_gas_station_within_1_mile, visualize_true_or_false)
       scoreAndVisualize(locs, has_a_restaraunt_that_is_good_for_breakfast_within_1_mile, visualize_true_or_false)
       scoreAndVisualize(locs, has_no_adult_entertainment_within_one_mile, visualize_true_or_false)
       scoreAndVisualize(locs, has_no_fast_food_within_one_mile, visualize_true_or_false)
       scoreAndVisualize(locs, has_at_least_one_hipster_wine_bar_within_5_miles, visualize_true_or_false)
-      scoreAndVisualize(locs, has_no_childcare_within15km, visualize_true_or_false)
-      scoreAndVisualize(locs, has_no_late_night_businesses_within_one_fourth_mile, visualize_true_or_false)
+      scoreAndVisualize(locs, has_no_childcare_within_2_mile, visualize_true_or_false)
       scoreAndVisualize(locs, has_urgent_care_pediatricians_with_gt_4stars_rating, visualize_true_or_false)
+      scoreAndVisualize(locs, has_no_late_night_businesses_within_one_fourth_mile, visualize_true_or_false)
 
 
    })
