@@ -192,6 +192,20 @@ function has_no_fast_food_within_one_mile(loc){
 
  return no_fast_food
 }
+// # Has urgent care pediatrician with 4 or more stars rating
+function has_urgent_care_pediatricians_with_gt_4stars_rating(loc){
+ var S = _.filter(items, function(x){
+   return _.contains(x['categories'], 'Pediatricians') && _.contains(x['categories'],'Urgent Care') && x['stars'] >= 4
+ })
+ console.log(S)
+ var bool = false
+ _.forEach(S,function(x){
+   var latlng = [S[0]['latitude'],S[0]['longitude']]
+   bool = geolib.isPointInCircle({latitude: loc['latitude'],longitude: loc['longitude']},latlng,15000)
+   if(bool == true){return true}
+ })
+ if(bool == false){return false}
+}
 
 function has_at_least_one_hipster_wine_bar_within_5_miles(loc){
     // get businesses within 1 mile radius
@@ -213,18 +227,41 @@ function has_at_least_one_hipster_wine_bar_within_5_miles(loc){
     }) 
     return hipsterWineBars.length > 0  
 }
+//#6 has no childcare within 15km radius
 function has_no_childcare_within15km(loc){
  var S = _.filter(items, function(x){
    return _.contains(x['categories'], 'Child Care & Day Care')
  })
+
  var bool = false
  _.forEach(S,function(x){
    var latlng = [S[0]['latitude'],S[0]['longitude']]
-   bool = geolib.isPointInCircle({latitude: loc['latitude'],longitude: loc['longitude']},latlng,15000)
-   if(bool == true){return false}
+
+   bool = !geolib.isPointInCircle({latitude: loc['latitude'],longitude: loc['longitude']},latlng,15000)
+   if(bool == false){return false}
  })
- if(bool == false){return true}
+ return bool
 }
+// 11. Are there any late night businesses?
+//     Businesses have late night hours, if they are open all night, in which case, no hours will be listed.
+//     Or, the closing hour is less than the opening hour (e.g., closing hour is 1:00 and opening hour is 8:00)
+function has_no_late_night_businesses_within_one_fourth_mile(loc){
+   // get businesses within 1 mile radius
+   var nearbyBusinesses = _.filter(items, function(item){
+       var loc2  = _.pick(item, ['latitude', 'longitude'])
+       var d = geolib.getDistance(loc, loc2)
+       return geolib.convertUnit('mi', d) < .25
+   })
+
+   var late_nighters = _.filter(nearbyBusinesses, function(b) {
+       if (b.hours == null) return true
+       else return _.some(b.hours, function(d) {
+           var hours = _.values(d)
+           return hours[0] <= hours[1]
+       })
+   })
+}
+
 //
 // Compute a score for a location using the provided scoring function 'scoreFunc'
 // and visualization function 'vizFunc'
@@ -334,6 +371,9 @@ function loadDataThenRunSolutions(){
       scoreAndVisualize(locs, has_no_fast_food_within_one_mile, visualize_true_or_false)
       scoreAndVisualize(locs, has_at_least_one_hipster_wine_bar_within_5_miles, visualize_true_or_false)
       scoreAndVisualize(locs, has_no_childcare_within15km, visualize_true_or_false)
+      scoreAndVisualize(locs, has_no_late_night_businesses_within_one_fourth_mile, visualize_true_or_false)
+      scoreAndVisualize(locs, has_urgent_care_pediatricians_with_gt_4stars_rating, visualize_true_or_false)
+
 
    })
    .fail(function(err){
