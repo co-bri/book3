@@ -88,11 +88,9 @@ function has_elementary_school_within_1_mile(loc){
     var d = geolib.getDistance(loc, loc2)
     return geolib.convertUnit('mi', d) < 1
   })
-
   var elem = _.filter(nearbyBusinesses, function (d){
     return _.includes(d['categories'],'Elementary Schools')
   })
-
   return elem.length > 0
 }
 
@@ -191,11 +189,11 @@ function has_no_fast_food_within_one_mile(loc){
    return geolib.convertUnit('mi', d) < 1
  })
 
- var no_fast_food = _.filter(nearbyBusinesses, function (business) {
-   return !_.includes(business.categories, 'Fast Food')
+ var fast_food = _.filter(nearbyBusinesses, function (business) {
+   return _.includes(business.categories, 'Fast Food')
  })
 
- return no_fast_food
+ return fast_food == 0
 }
 // # Has urgent care pediatrician with 4 or more stars rating
 function has_urgent_care_pediatricians_with_gt_4stars_rating(loc){
