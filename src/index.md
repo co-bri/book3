@@ -5,9 +5,11 @@ layout: layout.hbs
 # Book 3
 
 
-## Learning
+### Learning
 
 * [Week 9](week9/)
+
+* [Week 10](week10/)
 
 ## Hackathons
 

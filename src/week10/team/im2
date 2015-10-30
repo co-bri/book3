@@ -37,7 +37,7 @@
     <div class="parallax">
       <img src="nepal.jpg">
       <h1 id="title">What are the patterns of image diffusion during the Nepal Earthquake?
-        <div class="authors">by Brian McKean, Karen Blakemore, Ming Liew</div>
+        <div class="authors">by Name1, Name2, Name3, Name4</div>
       </h1>
 
     </div>
@@ -48,7 +48,7 @@
       <div id="questions" class="collection with-header">
           <div class="collection-header">Questions</div>
           <section id="q1" class="question collection-item">
-              <h4>What is the relationship between number of followers and number of retweets? (contributed by Brian)</h4>
+              <h4>question? (contributed by ???)</h4>
               <div class="answer"></div>
           </section>
 
@@ -111,38 +111,7 @@ Discuss some findings
 var items   // global scope (i.e., can be accessed in javascript console)
 
 function solution1(){
-    // Find relationship between number of followers and number of retweet
-    // Get original tweets  
-    var ot = _.filter(items,function(d){
-        return d['Rt'] != "Retweet"
-    })
-    // Map count of followers
-    var otfollow = _.sortBy(ot, function(d){
-        return -d['User Followers Count'] 
-    }) 
-    var z1 = _.take(otfollow, 20)
-    
-    var rt = _.filter(items,function(d){
-        return d['Rt'] == "Retweet"
-    })
-    var otrt = _.groupBy(rt,'* Original Tweet Created At')
-    console.log(otrt)
-    var y3 = _.sortBy(otrt, function(d){
-        return -d.length 
-    })  
-    var z2 = _.take(y3,20)
-    bothLists = _.filter(z1, function(d){
-        match = _.find(z2, function(e){
-            return e[0]['* Original Tweet Created At'] == d['* Tweet Created At']
-        })
-        return match
-
-    })
-    console.log(bothLists)
- 
-    answer = 'There are '+bothLists.length+' tweets on the top twenty lists for both number of followers and number of retweets'
-
-    return answer
+    return 'TODO'
 }
 
 function solution2(){
