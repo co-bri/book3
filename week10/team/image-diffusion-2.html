@@ -53,30 +53,31 @@
           </section>
 
           <section id="q2" class="question collection-item">
-              <h4>question? (contributed by ???)</h4>
+              <h4>What is the local and international percentage of retweet and what is the proportion of that? (contributed by Mingqi Liew)</h4>
               <div class="answer"></div>
           </section>
 
           <section id="q3" class="question collection-item">
-              <h4>question? (contributed by ???)</h4>
-              <div class="answer"></div>
-          </section>
+              <h4>Do tweets from influential tweeters live longer? (contributed by Karen)</h4>
+              <h5>The chart below shows how the lifespans of tweets vary based on the number of
+                  followers of the original tweet.</h5>
 
-          <section id="q4" class="question collection-item">
-              <h4>question? (contributed by ???)</h4>
-              <div class="answer"></div>
-          </section>
+              <h5>Each data point represents a unique image in the dataset, for all images where the originating
+                  tweet is also in the data set.  There are 429 total unique images in the data set.  Of these, 186
+                  also have the originating tweet in the data set.</h5>
 
-          <section id="q5" class="question collection-item">
-              <h4>question? (contributed by ???)</h4>
-              <div class="answer"></div>
-          </section>
+              <h5>The origin of the chart is the upper left corner.</h5>
 
-          <section id="q6" class="question collection-item">
-              <h4>question? (contributed by ???)</h4>
+              <h5>The x-axis is the tweet lifespan and ranges from
+                  0 to 127,816,000 seconds which is 148 days.  106 of the datapoints have an x-coordinate value of zero,
+                  indicating a zero lifespan. Twenty of these are due to errors in the dataset, the images of which are listed
+                  in the Discussion section.  The remaining 86 represent tweets that were not re-tweeted.</h5>
+
+              <h5>The y-axis is the number of followers
+                  of the original tweet.  It ranges from 1 to 74,383.</h5>
               <div class="answer"></div>
           </section>
-      </div>
+     </div>
 
   </div>
 
@@ -92,13 +93,36 @@
 
 # Discussion
 
-Discuss some findings
+## Discuss some findings
+There does not appear to be a rleationship between the number of followers and the number of retweets.  
+A high percentage of tweets are retweeted both loaclly and intarnatioanlly
+There does not appear to be a relationship between the number of followers and the length of time that a tweet is being retweetedThere does not appear to be a relationship between the number of followers and the length of time that a tweet is being retweeted.
 
-# Heading 2
+# Findings, Recommendations and Future Work
 
-Discuss some findings
+## Follower Counts Influence on Diffusion
+The findings related to follower counts were inconclusive, due to the small number of valid originating tweets which were retweeted.  There were 80 of
+these in the data set.  We have the following recommendations for increasing the number of originating tweets which are retweeted:
+1. Repair the invalid tweets listed below.
+2. Add missing orginator tweets.  Can this be done by searching twitter using the Image Id?
+3. Add retweets.  Can this be done by searching twitter using the Image Id?
 
-    </div>
+## Invalid Original Tweets
+Twenty of the original tweets are incorrect.  The image is either listed as origniating
+from multiple tweets, or the originating tweet date is greater than the retweet date.
+The following images have invalid originating tweets:
+
+592149979889819600, 592152575081893900,
+592139111860940800, 592285978557075500, 592613449072386000, 592108721112649700, 592531951036293100,
+592228035023114200, 592841349373816800, 592530513098707000, 592278192796241900, 592384635738333200,
+592672314648559600, 592235421192593400, 592576416144818200, 592573636696899600, 592228580630868000,
+592268981471424500, 592762668018225200, 592778296284323800
+
+## Future Follower Count Work
+1. Analyze the influence of retweeter's follower count on the diffusion of tweets.
+2. Consider a shorter time span for study, as the benefit of disaster news dissipates after a few days.
+
+
   </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.10.1/lodash.min.js"></script>
@@ -144,15 +168,103 @@ function solution1(){
 
     return answer
 }
-
 function solution2(){
-    return 'TODO'
+    var separators = [' ', '\\\+', '-', '\\\(', '\\\)', '\\*', '/', ':', '\\\?','_',',',';','____',"&",'/ ',': ',"#","!"];
+  //var list = []
+  var upperCase = _.memoize(function(string) {
+    return string.toLowerCase();
+  });
+  var local = _.filter(items, function(x){
+    var tokens = x['User Location'].split(new RegExp(separators.join('|'), 'g'));
+    var list = []
+    _.forEach(tokens,function(f){
+      list = list.concat(upperCase(f))
+    })
+    return !(_.contains(list,"singapore"))&&!(_.contains(list,"russia"))&&!(_.contains(list,"usa"))&&!(_.contains(list,"japan"))&&!(_.contains(list,"australia"))
+    &&!(_.contains(list,"london"))&&!(_.contains(list,"kuala"))&&!(_.contains(list,"india"))&&!(_.contains(list,"zealand"))&&!(_.contains(list,"adelaide"))
+    &&!(_.contains(list,"ireland"))&&!(_.contains(list,"sudan"))&&!(_.contains(list,"canada"))&&!(_.contains(list,"malaysia"))
+  })
+  var international = _.filter(items,function(x){
+    var tokens = x['User Location'].split(new RegExp(separators.join('|'), 'g'));
+    var list = []
+    _.forEach(tokens,function(f){
+      list = list.concat(upperCase(f))
+    })
+    return (_.contains(list,"singapore"))||(_.contains(list,"russia"))||(_.contains(list,"usa"))||(_.contains(list,"japan"))||(_.contains(list,"australia"))
+    ||(_.contains(list,"london"))||(_.contains(list,"kuala"))||(_.contains(list,"india"))||(_.contains(list,"zealand"))||(_.contains(list,"adelaide"))
+    ||(_.contains(list,"ireland"))||(_.contains(list,"sudan"))||(_.contains(list,"canada"))||(_.contains(list,"malaysia"))
+  })
+  var int_rt = _.filter(international,function(x){
+    return _.contains(x['Rt'],"Retweet")
+  })
+  var local_rt = _.filter(local,function(x){
+    return _.contains(x['Rt'],"Retweet")
+  })
+  var int_percent = int_rt.length / international.length*100
+  var local_percent = local_rt.length /local.length*100
+  var proportion = local_percent/int_percent*100
+  return "international retweet percentage is:"+int_percent+"%\n Local retweet percentage is: "+local_percent+"%\n proportion of local over international retweet is "+proportion + "%\n"
 }
-
+//
+// Do tweets sent from influential tweeters have a longer lifespan?
+//
 function solution3(){
-    return 'TODO'
+    // define a template string
+    var tplString = '<g> \
+    				<circle cx="${d.x}" \
+    				cy="${d.y}" \
+    				r="4" \
+    				stroke="black" \
+    				fill="red" /> \
+                    </g>'
+    // compile the string to get a template function
+    var template = _.template(tplString)
+    var groups = _.groupBy(items, 'Image Id Str')
+    console.log('groups', groups)
+    // Find original tweets
+    var images = _.mapValues(groups, function(tweets) {
+        var originalTweet = _.find(tweets, {'* Original Tweet Created At': ''})
+        var followers = null
+        var lifespan = -1
+        if (originalTweet) {
+            // Followers count of orignal tweet
+            var followers = originalTweet['User Followers Count']
+            // lifespan of tweet
+            var birth = Date.parse(originalTweet['* Tweet Created At'])
+            var death = _.max(tweets, function(tweet) {
+                 return Date.parse(tweet['* Tweet Created At'])
+            })
+            lifespan = Date.parse(death['* Tweet Created At']) - birth
+        }
+        return [lifespan, followers]
+    })
+    // Extract entries with original tweet in data set
+    var filteredImages = _.filter(_.values(images), function(image) {
+        return image[0] != -1
+    })
+    var unzippedFilteredImages = _.unzip(filteredImages)
+    var maxLifespan = _.max(unzippedFilteredImages[0])
+    var maxFollowers = _.max(unzippedFilteredImages[1])
+    // X coordinate is the scaled time
+    function computeX(d, i) {
+        return 600 * d[0]/maxLifespan + 10
+    }
+    // Y coordinate is the scaled follower count
+    function computeY(d, i) {
+        return 400 * 10 * d[1]/maxFollowers + 10
+    }
+    var viz = _.map(filteredImages, function(d, i){
+                return {
+                    x: computeX(d, i),
+                    y: computeY(d, i)
+                }
+             })
+    var result = _.map(viz, function(d){
+             // invoke the compiled template function on each viz data
+             return template({d: d})
+         })
+    return '<svg width="100%" height="100%">' + result + '</svg>'
 }
-
 function solution4(){
     return 'TODO'
 }
