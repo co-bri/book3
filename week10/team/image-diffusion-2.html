@@ -17,7 +17,7 @@
           font-size: 64px;
           font-weight: bolder;
           color: white;
-          top: 100px;
+          num: 100px;
           left: 0px;
           text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black
         }
@@ -136,6 +136,7 @@ var items   // global scope (i.e., can be accessed in javascript console)
 
 function solution1(){
     // Find relationship between number of followers and number of retweet
+    
     // Get original tweets  
     var ot = _.filter(items,function(d){
         return d['Rt'] != "Retweet"
@@ -144,17 +145,29 @@ function solution1(){
     var otfollow = _.sortBy(ot, function(d){
         return -d['User Followers Count'] 
     }) 
-    var z1 = _.take(otfollow, 20)
-    
+    num = 30
+    var z1 = _.take(otfollow, num)
+    // Get retweets 
     var rt = _.filter(items,function(d){
         return d['Rt'] == "Retweet"
     })
+    // Dataset is not complete so filter retweet counts to only those with
+    // orinal tweets in the dataset
+    var rto = _.filter(rt, function(d){
+	x = _.find(ot, function(e){
+            y = d['* Original Tweet Created At'] == e['* Tweet Created At']
+	    return y
+	})	
+	return x
+    })
+    console.log(rt.length)
+    console.log(rto.length)
     var otrt = _.groupBy(rt,'* Original Tweet Created At')
     console.log(otrt)
     var y3 = _.sortBy(otrt, function(d){
         return -d.length 
     })  
-    var z2 = _.take(y3,20)
+    var z2 = _.take(y3,num)
     bothLists = _.filter(z1, function(d){
         match = _.find(z2, function(e){
             return e[0]['* Original Tweet Created At'] == d['* Tweet Created At']
@@ -164,7 +177,7 @@ function solution1(){
     })
     console.log(bothLists)
  
-    answer = 'There are '+bothLists.length+' tweets on the top twenty lists for both number of followers and number of retweets'
+    answer = 'We did not find a correlation between follower count and the number of retweets.  There are '+bothLists.length+' tweets on the top '+num+' lists for both number of followers and number of retweets'
 
     return answer
 }
