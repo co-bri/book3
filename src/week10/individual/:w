@@ -12,7 +12,7 @@
 
 <div class="container">
 
-    <h1>Where should we build a new bookstore?</h1>
+    <h1>where should we build x?</h1>
 
     <section id="candidates" class="question">
         <h4>where are the candidate locations?</h4>
@@ -49,16 +49,16 @@ function getcandidatelocations2(){
 
 function getCandidateLocations(){
   var locations = []
-  var m = 5
+  var m = 10
   var n = m
   var lat = 33.40
   for (i = 0; i < m ; i++){
     var long = -112.00
     for ( j = 0; j < n; j++) {
       locations.push({latitude: lat, longitude: long})
-      long = long - 0.02
+      long = long - 0.01
     } 
-    lat = lat + .02
+    lat = lat + .01
   }  
   return locations
 }
@@ -73,56 +73,36 @@ function has_three_restaraunts_wthin_a_quarter_mile(loc){
   i = _.findIndex(locs, function(d){
     return loc == d
   })
-  var closeBusinesses = _.filter(nearBy[i], function(item){
+  var closeBusinesses = _.filter(nearbyBusinessess, function(item){
     var loc2  = _.pick(item, ['latitude', 'longitude'])
     var d = geolib.getDistance(loc, loc2)
-    return geolib.convertUnit('mi', d) < 0.25 
+    return geolib.convertUnit('mi', d) < 0.25
   })
   var rest = _.filter(closeBusinesses, function (d){
     return _.includes(d['categories'],'Restaurants')
   })
-  return rest.length > 2
+  return rest.length > 3
 }
 
-function there_are_no_coffee_shops_within_a_mile(loc){
-  i = _.findIndex(locs, function(d){
-    return loc == d
-  })
-  var coffeeShops = _.filter(nearBy[i], function (d){
-    return _.includes(d['categories'],'Coffee & Tea')
-  })
-  return coffeeShops.length ==  0
-}  
-
-function Has_a_college_nearby(loc){
-  i = _.findIndex(locs, function(d){
-    return loc == d
-  })
-  var college = _.filter(nearBy[i], function (d){
-    return _.includes(d['categories'],'Colleges & Universities')
-  })
-  return college.length > 0
+function has_some_feature_2(loc){
+  // TODO
+  return false
 }
 
-function Has_no_other_bookstore_within_one_mile(loc){
-  i = _.findIndex(locs, function(d){
-    return loc == d
-  })
-  var bookstore = _.filter(nearBy[i], function (d){
-    return _.includes(d['categories'],'Bookstores')
-  })
-  return bookstore.length == 0 
+function has_some_feature_3(loc){
+  // TODO
+  return true
 }
 
-function Has_shopping_nearby(loc){
-   i = _.findIndex(locs, function(d){
-    return loc == d
-  })
-  var shop = _.filter(nearBy[i], function (d){
-    return _.includes(d['categories'],'Shopping')
-  })
-  return shop.length > 2
-} 
+function has_some_feature_4(loc){
+  // TODO
+  return false
+}
+
+function has_some_feature_5(loc){
+  // TODO
+  return false
+}
 
 //
 // Compute a score for a location using the provided scoring function 'scoreFunc'
@@ -200,12 +180,10 @@ function visualize_true_or_false(domElement, locs, scores){
     })
 }
 
-var locs
-var nearBy = []
 var items = []
 function loadDataThenRunSolutions(){
 
-  locs = getCandidateLocations()
+  var locs = getCandidateLocations()
   visualize($('#candidates .map')[0], locs)
   $.get({url: 'http://bigdatahci2015.github.io/data/yelp/yelp_academic_dataset_business.phoenix.json.lines.txt'})
    .done(function(data){
@@ -216,7 +194,7 @@ function loadDataThenRunSolutions(){
 
       // take only the last 2000 to speed up computation
       // TODO: comment this out before the final submission
-      // items = _.takeRight(items, 2000)
+      items = _.takeRight(items, 2000)
 
       console.log('number of items loaded:', items.length)
       console.log('first item:', items[0])
@@ -224,20 +202,21 @@ function loadDataThenRunSolutions(){
       console.log('scoring all candidate locations')
 
 
+      var nearBy = []
       _.forEach(locs, function(loc){
 	  var nearbyBusinesses = _.filter(items, function(item){
 	    var loc2  = _.pick(item, ['latitude', 'longitude'])
 	    var d = geolib.getDistance(loc, loc2)
 	    return geolib.convertUnit('mi', d) < 1
 	    })
-	    nearBy.push(nearbyBusinesses)
+	  nearBy.push(nearbyBusinesses)
       }) 
 
       scoreAndVisualize(locs, has_three_restaraunts_wthin_a_quarter_mile , visualize_true_or_false)
-      scoreAndVisualize(locs, there_are_no_coffee_shops_within_a_mile, visualize_true_or_false)
-      scoreAndVisualize(locs, Has_a_college_nearby, visualize_true_or_false)
-      scoreAndVisualize(locs, Has_no_other_bookstore_within_one_mile, visualize_true_or_false)
-      scoreAndVisualize(locs, Has_shopping_nearby, visualize_true_or_false)
+      scoreAndVisualize(locs, has_some_feature_2, visualize_true_or_false)
+      scoreAndVisualize(locs, has_some_feature_3, visualize_true_or_false)
+      scoreAndVisualize(locs, has_some_feature_4, visualize_true_or_false)
+      scoreAndVisualize(locs, has_some_feature_5, visualize_true_or_false)
 
    })
    .fail(function(err){
