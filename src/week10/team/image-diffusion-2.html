@@ -94,7 +94,7 @@
 # Discussion
 
 ## Discuss some findings
-There does not appear to be a rleationship between the number of followers and the number of retweets.  
+There does appear to be a rleationship between the number of followers and the number of retweets.  
 A high percentage of tweets are retweeted both loaclly and intarnatioanlly
 There does not appear to be a relationship between the number of followers and the length of time that a tweet is being retweetedThere does not appear to be a relationship between the number of followers and the length of time that a tweet is being retweeted.
 
@@ -162,7 +162,7 @@ function solution1(){
     })
     console.log(rt.length)
     console.log(rto.length)
-    var otrt = _.groupBy(rt,'* Original Tweet Created At')
+    var otrt = _.groupBy(rto,'* Original Tweet Created At')
     console.log(otrt)
     var y3 = _.sortBy(otrt, function(d){
         return -d.length 
@@ -177,7 +177,7 @@ function solution1(){
     })
     console.log(bothLists)
  
-    answer = 'We did not find a correlation between follower count and the number of retweets.  There are '+bothLists.length+' tweets on the top '+num+' lists for both number of followers and number of retweets'
+    answer = 'We found a correlation between follower count and the number of retweets.  There are '+bothLists.length+' tweets on the top '+num+' lists for both number of followers and number of retweets'
 
     return answer
 }
