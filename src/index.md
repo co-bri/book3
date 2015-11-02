@@ -8,9 +8,11 @@ layout: layout.hbs
 ### Learning
 
 * [Week 9](week9/)
+* [Week 10](week10/)
 
 * [Week 10](week10/)
 
 ## Hackathons
 
 * [Business Location](hackathons/business-location)
+* [Twitter Events](hackathons/twitter)
