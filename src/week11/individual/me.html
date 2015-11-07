@@ -92,8 +92,8 @@ function analyze(events){
   ask(how_many_emails_have_i_received_since, events)
   ask(How_many_tweets_did_I_do_from_my_tech_bri_twitter_account, events)
   ask(How_many_email_have_I_receieved_from_linkedin, events)
-  ask(question3, events)
-  ask(question4, events)
+  ask(How_many_yes_rsvps_for_the_next_Spanish_meetup, events)
+  ask(Who_was_the_last_yes_RSVP_for_the_next_Spanish_meetup, events)
   ask(What_was_my_last_tweet_from_my_social_bri_account, events)
   ask(How_many_times_did_I_tweet_my_social_bri_account, events)
   ask(How_many_emails_did_I_receive_from_Data_Science_Central, events)
@@ -142,7 +142,7 @@ function How_many_email_have_I_receieved_from_linkedin(events){
   return 'I received '+x+' emails from linkedin'
 }
 
-function question3(events){
+function How_many_yes_rsvps_for_the_next_Spanish_meetup(events){
   console.log(events.SpanishMeetup) 
   w = _.pluck(events.SpanishMeetup,"RSVP")
   x = w.length 
@@ -150,7 +150,7 @@ function question3(events){
   return 'There are '+ x + ' yes RSVPs to the next Spanish meetup'
 }
 
-function question4(events){
+function Who_was_the_last_yes_RSVP_for_the_next_Spanish_meetup(events){
   x = _.pluck(events.SpanishMeetup,"RSVP")
   console.log(x) 
   if (x.length >  0){ 
