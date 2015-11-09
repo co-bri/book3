@@ -121,16 +121,16 @@ function analyze(events){
 
   ask(how_many_individuals_analyzed_so_far, events)
   ask(whose_data_is_available, events)
-  ask(How_many_individuals_have_gmail_in_their_firebase, events)
-  ask(How_many_individuals_have_twitter, events)
-  ask(Who_has_the_most_items_under_gmail, events)
-  ask(How_many_individuals_have_slack, events)
-  ask(How_many_individuals_have_github, events)
-  ask(How_many_individuals_have_youtube, events)
-  ask(Who_has_the_most_twitter_entries, events)
-  ask(Who_has_the_most_keys, events)
-  ask(How_many_individuals_have_instagram, events)
-  ask(Who_has_twitter, events)
+  ask(question1, events)
+  ask(question2, events)
+  ask(question3, events)
+  ask(question4, events)
+  ask(question5, events)
+  ask(question6, events)
+  ask(question7, events)
+  ask(question8, events)
+  ask(question9, events)
+  ask(question10, events)
 }
 
 function how_many_individuals_analyzed_so_far(events){
@@ -141,12 +141,12 @@ function whose_data_is_available(events){
   return _.keys(events).join(' , ')
 }
 
-function How_many_individuals_have_gmail_in_their_firebase(events){
+function question1(events){
   x = _.pluck(events,'gmail')
   return 'There are '+x.length+' individuals who have gmail as part of their firebase'
 }
 
-function How_many_individuals_have_twitter(events){
+function question2(events){
   x = _.filter(events,function(dv,dk,dc){
     y = _.has(dv,'twitter')
     return y
@@ -154,101 +154,59 @@ function How_many_individuals_have_twitter(events){
   return 'There are '+x.length+' individuals who have twitter as part of their firebase'
 }
 
-function Who_has_the_most_items_under_gmail(events){
-  e1 = _.mapValues(events, function(d){
-    x = _.pick(d, 'gmail')
-    return _.size(x) 
+function question3(events){
+  e2 = _.pairs(events)
+  console.log(e2)
+  e3 = _.remove(e2, funtion(a) {
+    return _.has(a[1],'twitter)
+
   })
-  console.log(e1)
-  y = _.max(e1)
-  z = _.findKey(e1, function(f){
-    return f == y
+  console.log(e3
+  s = _.filter(events,function(bv,bk,bc){
+    t = _.has(bv,'twitter')
+    return t
   })
-  return z+'has the most gmail entries'
-
-}
-
-
-function How_many_individuals_have_slack(events){
-  x = _.filter(events,function(dv,dk,dc){
-    y = _.has(dv,'slack')
-    return y
-  })
-  return 'There are '+x.length+' individuals who have slack as part of their firebase'
-}
-
-function How_many_individuals_have_github(events){
-  x = _.filter(events,function(dv,dk,dc){
-    y = _.has(dv,'github')
-    return y
-  })
-  return 'There are '+x.length+' individuals who have github as part of their firebase'
-}
-
-
-function How_many_individuals_have_youtube(events){
-  x = _.filter(events,function(dv,dk,dc){
-    y = _.has(dv,'youtube')
-    return y
-  })
-  return 'There are '+x.length+' individuals who have youtube as part of their firebase'
-}
-
-function Who_has_the_most_twitter_entries(events){
-  e1 = _.mapValues(events, function(d){
-    x = _.pick(d, 'twitter')
-    return _.size(x) 
-  })
-  console.log(e1)
-  y = _.max(e1)
-  z = _.findKey(e1, function(f){
-    return f == y
-  })
-  return z+' has the most twitter entries'
-}
-
-function Who_has_the_most_keys(events){
-  console.log(events)
-  x = _.mapValues(events, function(d){
-    y = _.keys(d)
-    return y.length
+  console.log(s)
+  x = _.mapValues(events,function(dv,dk,dc){
+    console.log(dv,dk,dc)
+    y = _.get(dv,'twitter')
+    console.log(y)
+    return y 
   })
   console.log(x)
-  z = _.sortBy(x, function(d){
-    return -d
-  })
-  console.log(z)
-  z1 = z[0] 
-  z3 = _.findKey(x,function(d){
-    // Note:  The highest number is a stsudent who did not use keys -- just logged emails
-    return d == z[1]
-  })
-  console.log(z3)
-  return 'The student with the most keys is '+z3+' with '+z[1]+' keys.'
+  return 'There are '+x.length+' individuals who have twitter as part of their firebase'
+
+
+
 }
 
-function How_many_individuals_have_instagram(events){
-  x = _.filter(events,function(dv,dk,dc){
-    y = _.has(dv,'instagram')
-    return y
-  })
-  return 'There are '+x.length+' individuals who have instagram as part of their firebase'
 
-
+function question4(events){
   return '...'
 }
 
-function Who_has_twitter(events){
-  w = _.pairs(events)
-  console.log(w)
-  x = _.filter(w, function(d){
-    console.log(d)
-    z = _.has(d[1],'twitter')
-    return z
-  })
-  console.log(x)
-  q = _.zipObject(x)
-  return 'These individuals have twitter in their firebase:'+_.keys(q).join(' , ')
+function question5(events){
+  return '...'
+}
+
+function question6(events){
+  return '...'
+}
+
+function question7(events){
+  return '...'
+}
+
+function question8(events){
+  return '...'
+}
+
+function question9(events){
+  return '...'
+}
+
+function question10(events){
+  return '...'
 }
 
 
