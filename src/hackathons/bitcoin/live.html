@@ -92,6 +92,7 @@ firebase
     // this function is invoked each time there's update on the value
     var tweet = snapshot.val()
     $('#tweet').html(tweet)
+	console.log("tweet",tweet)
     process(tweet)
 })
 

@@ -16,11 +16,11 @@ var keyWordEffects = [
 {'word':'apple','effect':1},
 {'word':'google','effect':0}]
 
-function decideWhetherOrNotToTrade(item){
+function decideWhetherOrNotToTrade(tweet){
   length = keyWordEffects.length
   buyDollars = 0
   sellDollars = 0
-  t = item.tweet.toLowerCase()
+  t = tweet.toLowerCase()
   for (i = 0; i<length; i++) {
     if ( t.search(keyWordEffects[i].word) != -1 ){
       if (keyWordEffects[i].effect == 1) {
