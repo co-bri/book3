@@ -30,16 +30,18 @@ function decideWhetherOrNotToTrade(item){
       }
     }
   }
+  answer = false
   if (bank.currency === 'USD'){ 
     if ( sellDollars >  buyDollars )
-      trade()
+ 	answer = true 
   } else {
   // you have bitcoins 
     if ( buyDollars > sellDollars ) 
     {
-      trade()
+      answer = true
     }  
   }  
+  return answer
 }
 var oldTweets = []
 var oldTweet = "" 
