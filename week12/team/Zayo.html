@@ -1,0 +1,229 @@
+<html>
+<head>
+  <title>Google Book Words</title>
+    <style>
+        .answer {
+            min-height: 50px
+        }
+        section{
+          padding: 10px;
+          margin-bottom: 12px
+        }
+        #title {
+          position: absolute;
+          padding: 20px;
+          font-size: 64px;
+          font-weight: bolder;
+          color: white;
+          top: 50px;
+          left: 0px;
+          text-shadow: -2px 0 black, 0 2px black, 5px 0 black, 0 -2px black
+        }
+        #title .authors {
+          padding: 20px;
+          font-size: 32px;
+          font-weight: bolder;
+          color: #DDD;
+          text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black
+        }
+        #tweets {
+          min-height: 300px;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.1/css/materialize.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/styles/tomorrow.min.css">
+</head>
+<body>
+
+  <div class="parallax-container"  style="height:300px">
+    <div class="parallax">
+      <img src="./Zayo.png">
+      <h1 id="title">What are observations about the Zayo data set?
+        <div class="authors">by Brian McKean, Kari Sanros, Tristan Wagan</div>
+      </h1>
+    </div>
+  </div>
+
+  <div class="section white container flow-text">
+      <div class="switch">
+        Source Code
+        <label>
+          <input type="checkbox">
+          <span class="lever"></span>
+        </label>
+      </div>
+
+      <div id="questions" class="col s10 collection">
+      </div>
+  </div>
+
+  <script src="https://cdn.firebase.com/js/client/2.3.1/firebase.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.10.1/lodash.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.1/js/materialize.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.3.5/marked.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/highlight.min.js"></script>
+  <script>
+
+function toggleSourecode(){
+  $('pre').each(function(){
+    if ($(this).height()){
+        $(this).attr('data-height', $(this).height())
+        $(this).height(0)
+    } else {
+      $(this).height($(this).attr('data-height'))
+    }
+  })
+}
+$('.switch input').click(toggleSourecode)
+
+function csv2jsonArray(rawdata){
+  console.log('converting csv to json array')
+  var lines = rawdata.trim().split('\n')
+  var rows = _.rest(lines)
+  return _.map(rows, function(row){
+    var toks = row.split(',')
+    return {decade: toks[0], word: toks[1], rank: toks[2], count: toks[3]}
+    // TODO:
+    // return {decade:1900, word: 'the', count: 721149566}
+  })
+}
+
+var items
+var z2
+$.ajax({url: './z.json'})
+ .done(function(rawdata){
+
+  items = rawdata[0]
+  z2 = rawdata[1]
+  console.log('number of items loaded:', items.length)
+  console.log('first item:', items[0])
+  analyze()
+
+ })
+ .fail(function(err){
+     console.error(err)
+ })
+
+function ask(text, func){
+  var answer = func(items)
+
+  // html element to display the answer
+  var answerHtml = '<div class="collection-item answer">' +
+      '<h4>' + text + '</h4>' +
+      '<div>' + answer + '</div>' +
+      '<pre><code>' + func.toString() + '</code></pre>' +
+    '</div>'
+
+  // append to #quetions
+  $('#questions').append(answerHtml)
+}
+
+function analyze(){
+  ask('How many products in the dataset?', example)
+  ask('How many states does Zayo have customers?', func1)
+  ask('Which five states have the most customers?', func2)
+  ask('Which five states have the most revenue?', func3)
+  ask('Which five states have the highest average revenue?', func4)
+ 
+
+  $('pre code').each(function(i, block) {
+    hljs.highlightBlock(block);
+  })
+  toggleSourecode()
+}
+
+function example(){
+  return _.unique(_.pluck(items, 'Product')).length
+}
+
+function func1(){
+  return _.unique(_.pluck(items, 'State A')).length
+}
+
+function func2(){
+  var x =  _.groupBy(items, 'State A')
+  var y = _.mapValues(x, function(d){
+    return d.length
+  })
+  z = _.pairs(y)
+  var a = _.sortByOrder(z, function(d){
+      return d[1]
+  },'desc')
+  b = _.filter(a, function(v){
+    return v[0]  != ""
+  })
+  var c = _.take(b,5)
+  return c 
+}
+
+function func3(){
+  var itemsRev =  _.filter(items, function(d){
+      x = d[' Total MRR ']
+      return x.split(" ").join("") != "$-"
+  })
+  var states = _.groupBy(itemsRev,'State A')
+
+  var sums = _.mapValues(states, function(d){
+    a = _.sum(d, function(e){
+      x = e[' Total MRR ']
+      y = Number(x.replace(/[^0-9\.]+/g,""))*100
+      return y
+    })
+    return a/100
+  })
+  sums2 = _.pairs(sums)
+  var a = _.sortByOrder(sums2, function(d){
+      return d[1]
+  },'desc')
+  b = _.filter(a, function(v){
+    return v[0]  != ""
+  })
+  var c = _.take(b,5)
+  _.forEach(c, function (d){
+    d[1] = "$"+d[1].toString()
+  })
+  return c 
+} 
+
+
+function func4(){
+  var itemsRev =  _.filter(items, function(d){
+      x = d[' Total MRR ']
+      return x.split(" ").join("") != "$-"
+  })
+  var states = _.groupBy(itemsRev,'State A')
+
+  var sums = _.mapValues(states, function(d){
+    a = _.sum(d, function(e){
+      x = e[' Total MRR ']
+      y = Number(x.replace(/[^0-9\.]+/g,""))*100
+      return y
+    })
+    b = a / d.length
+    return b / 100
+  })
+  sums2 = _.pairs(sums)
+  var a = _.sortByOrder(sums2, function(d){
+      return d[1]
+  },'desc')
+  b = _.filter(a, function(v){
+    return v[0]  != ""
+  })
+  var c = _.take(b,5)
+  _.forEach(c, function (d){
+    d[1] = "$"+d[1].toFixed(2).toString()
+  })
+  return c 
+}
+
+// initialize the parallax effect
+$(document).ready(function(){
+    $('.parallax').parallax()
+})
+
+    </script>
+
+</body>
+</html>
