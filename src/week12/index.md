@@ -5,7 +5,7 @@ layout: layout.hbs
 # Week 12 - Learning Challenges
 
 # Zayo
-- [Zayo - Day 1](team/zayo.html)
+- [Zayo - Day 1](team/Zayo.html)
 
 # Individual
 

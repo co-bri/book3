@@ -94,7 +94,7 @@ $.ajax({url: 'https://big-data-hci-hackathon.firebaseapp.com/history.json'})
       $('#tweet').html(item.tweet)
       $('#price').html(item.price)
       trackEffects(item.tweet, item.price)
-      process(item)
+      process(item.tweet)
     }, 2)
 
  })
@@ -103,8 +103,8 @@ $.ajax({url: 'https://big-data-hci-hackathon.firebaseapp.com/history.json'})
  })
 
 
-function process(item){
-   if (decideWhetherOrNotToTrade(item.tweet)){
+function process(tweet){
+   if (decideWhetherOrNotToTrade(tweet)){
      trade()
    }
    showBankBalanceInUSD()

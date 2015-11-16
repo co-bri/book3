@@ -39,7 +39,7 @@
     <div class="parallax">
       <img src="http://res.cloudinary.com/craftml/image/upload/c_scale,e_brightness:-62,w_1000/v1447038536/books_nh4k05.jpg">
       <h1 id="title">How did word usage change over time?
-        <div class="authors">by Name</div>
+        <div class="authors">by Brian McKean</div>
       </h1>
     </div>
   </div>
@@ -148,43 +148,270 @@ function example(){
 }
 
 function func1(){
-  return '...'
+  var word = _.filter(items, function(d){
+      return d['word'] == "data"
+
+  })
+  var decades = [] 
+  var answer = "Rank of popularity by decade: "
+  _.forEach(word, function(e){
+    decades.push( e['decade'], e['rank'])
+    answer = answer+"\r\n"+e['decade']+":"+e['rank']
+  }) 
+  
+  return answer
+ 
 }
 
 function func2(){
+  var word = _.filter(items, function(d){
+      return d['word'] == "oil"
+
+  })
+  var decades = [] 
+  var answer = "Rank of popularity by decade: "
+  _.forEach(word, function(e){
+    decades.push( { decade: e['decade'], rank:   e['rank']} )
+    answer = answer+"\r\n"+e['decade']+":"+e['rank']
+  }) 
+  a = _.sortByOrder( decades, function(d){
+    return d['rank']
+  }, 'asc')
+  answer = a[0]['decade']
+  
+  return answer
+ 
+
   return '...'
 }
 
 function func3(){
-  return '...'
+  var word = _.filter(items, function(d){
+      return d['word'] == "feminism"
+
+  })
+  var decades = []
+  var answer = "rank of popularity by decade: "
+  _.forEach(word, function(e){
+    decades.push( e['decade'], e['rank'])
+    answer = answer+"\r\n"+e['decade']+":"+e['rank']
+  })
+  answer = answer + "\r\n not until "+decades[0]
+
+  return answer
+
 }
 
 function func4(){
-  return '...'
+  var word = _.filter(items, function(d){
+      return d['word'] == "communism"
+
+  })
+  var decades = []
+  var answer = "rank of popularity by decade: "
+  _.forEach(word, function(e){
+    decades.push( e['decade'], e['rank'])
+    answer = answer+"\r\n"+e['decade']+":"+e['rank']
+  })
+
+  return answer
+
 }
 
 function func5(){
-  return '...'
+  words = _.groupBy(items, 'word')
+  words2 = _.filter(words, function(d){
+    return d.length < 3
+  })
+  words2 = _.flatten(words2)
+  words2 = _.groupBy(words2, 'word')
+  words3 = _.filter(words2, function(d){
+    decades =  _.pluck(d, 'decade')
+    oldList = _.filter(decades, function(decade){
+        return _.inRange(decade, 1900,1910)
+    })
+    newList = _.filter(decades, function(decade){
+        return _.inRange(decade, 1920,2010)
+    })
+    x = ((_.size(newList) == 0) && (_.size(oldList) > 0))
+    return x  
+  })
+  words3 = _.flatten(words3)
+  oldWords = _.groupBy(words3, 'word')
+  oldWordList = _.keys(oldWords)
+  return "The following words only are on the lists from 1900-1910 "+ oldWordList.join(", ")
 }
 
 function func6(){
-  return '...'
+ words = _.groupBy(items, 'word')
+  words2 = _.filter(words, function(d){
+    return d.length < 3
+  })
+  words2 = _.flatten(words2)
+  words2 = _.groupBy(words2, 'word')
+  words3 = _.filter(words2, function(d){
+    decades =  _.pluck(d, 'decade')
+    oldList = _.filter(decades, function(decade){
+        return _.inRange(decade, 1900,1990)
+    })
+    newList = _.filter(decades, function(decade){
+        return _.inRange(decade, 2000,2010)
+    })
+    x = ((_.size(newList) > 0) && (_.size(oldList) == 0))
+    return x  
+  })
+  words3 = _.flatten(words3)
+  newWords = _.groupBy(words3, 'word')
+  newWordList = _.keys(newWords)
+  return "The following words only are on the lists from 1900-1910 "+ newWordList.join(", ")
+ 
+
+return '...'
 }
 
 function func7(){
-  return '...'
+  var word = _.filter(items, function(d){
+    return d['word'] == "internet"
+  })
+  firstDecade = _.get(_.min(word, 'decade'), 'decade')
+  wordList = _.groupBy(items, 'word')
+  var words = _.groupBy (items, 'word')
+  var wordStart = _.mapValues( words, function(d){
+      x = _.get(_.min(d, 'decade'),'decade')
+      return x
+  })
+  wordStart = _.pairs(wordStart)
+  var same = _.filter(wordStart, function (d){
+      return d[1] == firstDecade
+  })
+  var answer = "The decade was "+firstDecade+" and the other words that became popular that decade were: "
+  _.forEach(same, function(d){
+    answer = answer + ", "+d[0]
+  })
+  return answer
 }
 
 function func8(){
-  return '...'
+  var oil = _.filter(items, function(d){
+    return d['word'] == "oil"
+  })
+  var oilPop = []
+  _.forEach(oil, function(d){
+    x = _.get(d, 'decade')
+    y = _.get(d, 'rank')
+    oilPop.push( [x, y] )
+  })
+  oilPop = _.sortBy(oilPop, function(d){
+    return d[0]
+  })
+  var gold = _.filter(items, function(d){
+    return d['word'] == "gold"
+  })
+  var goldPop = []
+  _.forEach(gold, function(d){
+    x = _.get(d, 'decade')
+    y = _.get(d, 'rank')
+    goldPop.push( [x, y] )
+  })
+  goldPop = _.sortBy(goldPop, function(d){
+    return d[0]
+  })
+  found = false 
+  _.forEach(goldPop, function(g){
+    if (found == false){
+      o = _.find(oilPop, function(d){
+        return d[0] == g[0]
+      })
+      if (o) {
+        if ( parseInt(o[1]) < parseInt(g[1]) ) {
+          found = true
+          decade = g[0]
+        }
+      }
+    }
+  })
+  if ( found) {
+
+    answer = "Oil became more poplar in "+decade
+  } else {
+    answer = "Oil never became more popular than gold"   
+  } 
+
+return  answer
+
 }
 
 function func9(){
-  return '...'
+  words = _.groupBy(items, 'word')
+  diff = _.mapValues(words, function(d, k){
+    pop1 = _.find(d, function(e){
+      return e.decade == 1900
+    })
+    pop2 = _.find(d, function(e){
+      return e.decade == 2000
+    })
+    if ( pop1 && pop2) {
+      pop1 = parseInt(pop1.rank)
+      pop2 = parseInt(pop2.rank)
+      x = pop2 - pop1
+    } else {
+      x = 0
+    }
+    return x
+  })
+  diff = _.pairs(diff)
+  diff2 = _.sortByOrder(diff,function(d){
+    return d[1]
+  }, 'desc') 
+  diff3 = _.take(diff2, 10)
+  var answer = "The largest drops in popularity from 1900 to 2000 were "
+  _.forEach(diff3, function(d){
+    answer = answer + d[0]+" with a drop of "+d[1]+" places, "
+  })    
+
+ return answer
 }
 
+function findChange(word){
+  code = ""
+  start = true
+  _.forEach(word, function(d){
+    if ( start ){
+      start = false
+    } else {
+      if (d.rank < last) {
+        code = code +"H"
+      } else if (d.rank == last) {
+        code = code = "S"
+      } else {
+        code = code +"L"
+      }
+    }   
+    last = d.rank
+  })
+  return code
+}
 function func10(){
-  return '...'
+  war = _.filter(items, function(d){
+    return d.word == 'war'
+  })
+  words = _.groupBy(items, 'word')
+  start = true
+  codeWar = findChange(war)
+  wordsChange = _.mapValues(words, function(d){
+    code = findChange(d)
+    return code
+  })
+  wordArray = _.pairs(wordsChange)
+  answer = "The change pattern for 'war' is "+codeWar+"where H is higher, S is same and L is lower popularity. "
+  samePattern = "These words have the same change pattern as the word 'war, : "
+  _.forEach(wordArray, function(d){
+    if (d[1]  == codeWar) {
+      samePattern = samePattern+d[0]+", "
+    }
+  })
+  return answer+samePattern
+
 }
 
 // initialize the parallax effect

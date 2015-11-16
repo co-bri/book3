@@ -16,6 +16,7 @@ var keyWordEffects = [
 {'word':'apple','effect':1},
 {'word':'google','effect':0}]
 
+
 function decideWhetherOrNotToTrade(tweet){
   length = keyWordEffects.length
   buyDollars = 0
