@@ -115,40 +115,22 @@ function func3(){
   var look = _.find(items, function(d){
     return d.Ping_time == "09:57:18"
   })
-  var samples = look.Samples
+  console.log( look  )
+  var samples = _.pick(look, 'Samples')
+  console.log(samples)
   var sevens = _.filter(samples, function(d){
-    return parseInt(d) == 7
+    console.log(d, parseInt(d), parseInt(d) == 0)
+    return parseInt(d) == 0
   }) 
   return sevens.length
 }
 
 function func4(){
-  var times = _.groupBy(items, 'Ping_time')
-  var threes = _.mapValues(times, function(d){
-    x = d[0].Samples
-    y = _.filter(x, function(e){
-      return parseInt(e) == 3
-    })
-    return y.length
-  })
-  console.log(threes)
-  threes = _.pairs(threes)
-  var threes2 = _.sortBy(threes, function(d){
-    return d[1]  
-  })
-  console.log(threes2)
-  return threes2[threes2.length - 1][0]
+  return '...'
 }
 
 function func5(){
-  x = _.filter(items, function(d){
-    samples = d.Samples
-    console.log(samples, d)
-    largest = _.max(samples)
-    console.log(largest)
-    return largest <= 0
-  })
-  return x.length
+  return '...'
 }
 
 function func6(){

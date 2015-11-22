@@ -74,23 +74,81 @@ function example3(){
 }
 
 function func1(){
-  return '...'
+  stuff = _.pluck(items, 'Samples')
+  allSamples = _.flatten(stuff)
+  uniqueSamples = _.unique(allSamples)
+  nonZero = _.filter(uniqueSamples,function(d){
+    return d > 0
+  })
+  return nonZero.length
 }
 
 function func2(){
-  return '...'
+  // get all the dates
+  var times = []
+  var date1
+  var time1
+  _.forEach(items, function(d){
+    date1= d.Ping_date
+    time1= d.Ping_time
+    var dateString = date1+" "+time1
+    e = new Date(dateString)
+    times.push(e)   
+  })
+  // FInd all the deltas
+  var total_delta = 0
+  var last_time = 0
+  var first = true
+  _.forEach(times, function(t){
+    if (first) {
+      first = false
+    } else{
+      total_delta = total_delta + (t - last_time) 
+    }
+    last_time = t
+  })
+  var avgTime = total_delta / (times.length - 1 )
+  return avgTime/ 1000
 }
 
 function func3(){
-  return '...'
+  var look = _.find(items, function(d){
+    return d.Ping_time == "09:57:18"
+  })
+  var samples = look.Samples
+  var sevens = _.filter(samples, function(d){
+    return parseInt(d) == 7
+  }) 
+  return sevens.length
 }
 
 function func4(){
-  return '...'
+  var times = _.groupBy(items, 'Ping_time')
+  var threes = _.mapValues(times, function(d){
+    x = d[0].Samples
+    y = _.filter(x, function(e){
+      return parseInt(e) == 3
+    })
+    return y.length
+  })
+  console.log(threes)
+  threes = _.pairs(threes)
+  var threes2 = _.sortBy(threes, function(d){
+    return d[1]  
+  })
+  console.log(threes2)
+  return threes2[threes2.length - 1][0]
 }
 
 function func5(){
-  return '...'
+  x = _.filter(items, function(d){
+    samples = d.Samples
+    console.log(samples, d)
+    largest = _.max(samples)
+    console.log(largest)
+    return largest <= 0
+  })
+  return x.length
 }
 
 function func6(){
