@@ -80,7 +80,13 @@ function func1(){
   nonZero = _.filter(uniqueSamples,function(d){
     return d > 0
   })
-  return nonZero.length
+  nonZero.sort()
+  answer = "There are "+nonZero.length+" non-zero samples. They are: "
+  _.forEach(nonZero, function(d){
+    answer = answer + parseInt(d) + ", "
+  })
+  
+  return answer
 }
 
 function func2(){
@@ -131,28 +137,50 @@ function func4(){
     })
     return y.length
   })
-  console.log(threes)
   threes = _.pairs(threes)
   var threes2 = _.sortBy(threes, function(d){
     return d[1]  
   })
-  console.log(threes2)
   return threes2[threes2.length - 1][0]
 }
 
 function func5(){
   x = _.filter(items, function(d){
     samples = d.Samples
-    console.log(samples, d)
     largest = _.max(samples)
-    console.log(largest)
     return largest <= 0
   })
   return x.length
 }
 
 function func6(){
-  return '...'
+  var counts = _.range(60).map(function(){
+    return 0
+  }) 
+  var max = 0
+  var maxIndex = 0
+  _.forEach(items, function(d){
+    _.forEach(d.Samples, function(e){
+      f = parseInt(e)
+      if ( f > 0 ) {
+        counts[f] = counts[f] + 1  
+        if ( counts[f] > max) {
+          max = counts[f]
+          maxIndex = f
+        } 
+      }
+    })
+  })
+  answer = "The values for the non-zero counts are: "
+  thisValue = 0
+  _.forEach(counts, function(d){
+      if (thisValue > 0){
+        answer = answer + thisValue+":"+d+", "
+      }
+      thisValue = thisValue + 1
+  })
+  answer = answer + "\n\n and the largest non-zero count is at value "+maxIndex+" with a count of "+max 
+  return answer
 }
 
 function func7(){
@@ -160,37 +188,241 @@ function func7(){
   // this sample code shows how to display a map and put a marker to visualize
   // the location of the first item (i.e., measurement data)
   // you need to adapt this code to answer the question
-
+  console.log(items[1])
   var first = items[0]
   var pos = [first.Latitude, first.Longitude]
   var el = $(this).find('.viz')[0]    // lookup the element that will hold the map
   $(el).height(500) // set the map to the desired height
   var map = createMap(el, pos, 5)
 
-  var circle = L.circle(pos, 500, {
+  var ny = [40.7127, -74.0059 ]
+  var longest = 0
+  var p = []
+  var dataPoint
+  _.forEach(items,function(d){
+    point = [parseFloat(d.Latitude), parseFloat(d.Longitude)]
+    dist = geolib.getDistance(ny,point)/1000
+    if ( dist > longest){
+      longest = dist
+      p = point
+      dataPoint = d
+    }
+  })
+  console.log(p, longest)
+  var circle = L.circle(p, 500, {
       color: 'red',
       fillColor: '#f03',
       fillOpacity: 0.5
   }).addTo(map);
-  return '...'
+ 
+  var latlngs = [ny, p]
+  var polyline = L.polyline(latlngs, {color: 'yellow'}).addTo(map);
+
+
+  answer = "The boat was farthes away from NYC at "+dataPoint.Ping_time+" and the distance was "+longest+" km"
+  return answer
 }
 
 function func8(){
-  return '...'
+  
+  var first = items[0]
+  var pos = [first.Latitude, first.Longitude]
+  var el = $(this).find('.viz')[0]    // lookup the element that will hold the map
+  $(el).height(500) // set the map to the desired height
+  var map = createMap(el, pos, 5)
+
+  var ny = [40.7127, -74.0059 ]
+  var p
+  var oldp = [parseFloat(first.Latitude), parseFloat(first.Longitude)]
+  _.forEach(items,function(d){
+    p = [parseFloat(d.Latitude), parseFloat(d.Longitude)]
+    var circle = L.circle(p, 5, {
+      color: 'red',
+      fillColor: '#f03',
+      fillOpacity: 0.5
+    }).addTo(map);
+    if (oldp != p)
+    {
+      var latlngs = [oldp, p]
+      var polyline = L.polyline(latlngs, {color: 'yellow'}).addTo(map);
+       oldp = p
+    }
+  })
+
+return 'Red circles indicate data points, yellow lines are the path'
 }
 
 function func9(){
-  return '...'
+  // The most common sample value was 3
+  // Map the locations that included at least one sample value of 3
+  places = _.filter(items, function(d){
+    threes = _.find(d.Samples , function(e){
+      data = parseInt(e)
+      return data == 3
+    })  
+    // if there is at least one sample
+    return threes
+  })
+  console.log(items.length, places.length)
+
+  
+  var first = items[0]
+  var pos = [first.Latitude, first.Longitude]
+  var el = $(this).find('.viz')[0]    // lookup the element that will hold the map
+  $(el).height(500) // set the map to the desired height
+  var map = createMap(el, pos, 5)
+
+  var p
+  _.forEach(items,function(d){
+    p = [parseFloat(d.Latitude), parseFloat(d.Longitude)]
+    var circle = L.circle(p, 5, {
+      color: 'red',
+      fillColor: '#f03',
+      fillOpacity: 0.5
+    }).addTo(map);
+ })
+
+  _.forEach(places,function(d){
+    p = [parseFloat(d.Latitude), parseFloat(d.Longitude)]
+    var circle = L.circle(p, 2, {
+      color: 'blue',
+      fillColor: '#f03',
+      fillOpacity: 0.5
+    }).addTo(map);
+ })
+
+
+  return 'Red circles indicate each measurement spot, those which include a data point of 3 also have a blue center...'
 }
 
 function func10(){
-  return '...'
+  
+  var first = items[0]
+  var pos = [first.Latitude, first.Longitude]
+  var el = $(this).find('.viz')[0]    // lookup the element that will hold the map
+  $(el).height(500) // set the map to the desired height
+  var map = createMap(el, pos, 5)
+
+ var densityMap = []
+  var maxDensity = 0
+  _.forEach(items, function(d){
+    p = [parseFloat(d.Latitude), parseFloat(d.Longitude)]
+    validSamples = _.filter( d.Samples, function(e){
+      s = parseInt(e)
+      return s > 0
+    }) 
+    density = validSamples.length
+    if (density > maxDensity ) { maxDensity = density }
+    densityMap.push( {'position':p, 'density':density})
+  }) 
+  console.log(densityMap)
+
+  _.forEach(densityMap,function(d){
+    p = d.position
+    if (d.density > 0 ){  
+      shade = d.density / maxDensity
+      console.log(shade)
+      
+      var circle = L.circle(p, 5, {
+        color: 'red',
+        fillColor: 'red',
+        fillOpacity: shade
+      }).addTo(map);
+    }
+   })
+
+
+  return 'Points with valid samples and shade indicates numer of valid samples at that location ...'
 }
 
+var byPosition = []
+var byDepth = []
+
 function func11(){
-  return '...'
+
+// Larger -- big fish
+//18 kHz is mapped to 1 -> index 0
+//38 kHz is mapped to 3 -> 1
+//70 kHz is mapped to 29 -> 2
+//120 kHz is mapped to 7 -> 3
+//200 kHz is mapped to 13 ->  
+// Smaller -- plankton
+
+  var setReading = _.range(5).map(function(){ 
+    return 0
+  })
+
+  byDepth = _.range(1000).map(function(){ 
+    return  _.range(5).map(function(){ 
+    	return 0
+    })
+  })
+
+  _.forEach(items, function(d){
+    p = [parseFloat(d.Latitude), parseFloat(d.Longitude)]
+    thisReading = setReading
+    depthIndex = 0
+    _.forEach(d.Samples, function(e){
+      datum = parseInt(e)
+      if ( datum > 0 ){
+        if ( datum >= 29 ){
+          thisReading[2] = thisReading[2] + 1
+          byDepth[depthIndex][2] = byDepth[depthIndex][2] + 1 
+          datum = datum - 29
+        }  
+        if (datum >= 13 ){
+          thisReading[4] = thisReading[4] + 1 
+          byDepth[depthIndex][4] = byDepth[depthIndex][4] + 1 
+          datum = datum - 13
+        } 
+        if (datum >= 7 ){
+          thisReading[3] = thisReading[3] + 1 
+          byDepth[depthIndex][3] = byDepth[depthIndex][3] + 1 
+          datum = datum - 7
+        } 
+        if (datum >= 3 ){
+          thisReading[1] = thisReading[1] + 1 
+          byDepth[depthIndex][1] = byDepth[depthIndex][1] + 1 
+          datum = datum - 3
+        } 
+        if (datum >= 1 ){
+          thisReading[0] = thisReading[0] + 1 
+          byDepth[depthIndex][0] = byDepth[depthIndex][0] + 1 
+          datum = datum - 7
+        }
+        if ( datum > 0 ) { console.log("error datum = ", datum) } 
+      }   
+      depthIndex = depthIndex + 1 
+    })
+    byPosition.push({'position': p, 'reading':thisReading}) 
+  })
+  console.log(byDepth)
+  console.log(byPosition)
+  answer = "The distribution of fish by size found (frequency) at each depth, larger to smaller is "
+  depth = 1
+  _.forEach(byDepth, function(d){
+    _.forEach(d, function(e){
+      answer = answer + e + ", " 
+    }) 
+    answer = answer + "at a depth of "+depth*2+"m,              "
+    depth = depth + 1 
+  })
+  return answer
 }
 
 function func12(){
-  return '...'
+
+  answer = "The plankton (smalles animal, therfore largest frequency) at each depth is "
+  depth = 1
+  _.forEach(byDepth, function(d){
+    if (d[4] > 0) { 
+      answer = answer + "count of "+d[4]+" at a depth of "+depth*2+"m, \r\n  "
+    }
+    depth = depth + 1 
+  })
+  return answer
+
 }
+
+
+
